@@ -1,0 +1,10 @@
+defaults:
+  - _self_
+  - experiments@: base_train #We're currently not learning
+  - habitat_conf: sandbox
+  #- habitat_conf/task: sandbox
+  - wandb@: own
+  - override hydra/output: local
+  #- override hydra/launcher: slurm_train #We're currently not using slurm/submitit
+
+RUN_TYPE: train

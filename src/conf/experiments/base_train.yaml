@@ -1,0 +1,36 @@
+# @package _global_
+
+defaults:
+  - /habitat_baselines: habitat_baselines_rl_config_base
+  - _self_
+
+habitat_baselines:
+  
+  # Paths
+  video_dir: ${hydra:sweep.dir}/video
+  tensorboard_dir: ${hydra:sweep.dir}/logs
+  eval_ckpt_path_dir: ${hydra:sweep.dir}/checkpoints
+  checkpoint_folder: ${hydra:sweep.dir}/checkpoints
+  log_file: ${hydra:sweep.dir}/train.log
+  writer_type: 'wb'
+  load_resume_state_config: False
+  
+  verbose: False
+  trainer_name: "ver"
+  torch_gpu_id: 0
+  video_fps: 30
+  video_render_views:
+    - "third_rgb_sensor"
+  test_episode_count: 250
+  num_environments: 1
+  num_updates: -1
+  total_num_steps: 600_000_000.0
+  log_interval: 10
+  num_checkpoints: 120
+  # Force PyTorch to be single threaded as
+  # this improves performance considerably
+  force_torch_single_threaded: True
+  eval_keys_to_include_in_name: ["reward", "force", "success"]
+
+  eval:
+    video_option: ["disk"]

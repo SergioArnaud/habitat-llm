@@ -1,0 +1,24 @@
+defaults:
+    - submitit_slurm
+
+nodes: 1
+tasks_per_node: 1
+gpus_per_node: 1
+cpus_per_task: 8
+gpus_per_task: 1
+mem_per_cpu: 4000
+
+#mem_per_gpu: 5120
+#constraint: volta32gb
+
+#timeout_min: 1440
+timeout_min: 10
+signal_delay_s: 30
+
+partition: learnfair
+#partition: scavenge
+
+name: ${hydra.job.name}
+_target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
+submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+setup: [export MASTER_ADDR=$(hostname -s)]
