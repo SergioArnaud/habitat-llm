@@ -34,3 +34,163 @@ habitat_baselines:
 
   eval:
     video_option: ["disk"]
+  
+
+  rl:
+    policy:
+        name: "PointNavResNetPolicy"
+        action_distribution_type: "gaussian"
+        action_dist:
+           use_log_std: True
+           clamp_std: True
+           std_init: -1.0
+           use_std_param: True
+        hierarchical_policy:
+          high_level_policy:
+            name: "FixedHighLevelPolicy"
+            add_arm_rest: True
+          defined_skills:
+            nn_open_cab:
+              skill_name: "ArtObjSkillPolicy"
+              name: "PointNavResNetPolicy"
+              action_distribution_type: "gaussian"
+              at_resting_threshold: 0.15
+              obs_skill_inputs: []
+              load_ckpt_file: "data/models/open_cab.pth"
+              max_skill_steps: 200
+              start_zone_radius: 0.3
+              force_end_on_timeout: True
+
+            nn_open_fridge:
+              skill_name: "ArtObjSkillPolicy"
+              name: "PointNavResNetPolicy"
+              action_distribution_type: "gaussian"
+              at_resting_threshold: 0.15
+              obs_skill_inputs: []
+              load_ckpt_file: "data/models/open_fridge.pth"
+              max_skill_steps: 200
+              start_zone_radius: 0.3
+              force_end_on_timeout: True
+
+            nn_close_cab:
+              skill_name: "ArtObjSkillPolicy"
+              name: "PointNavResNetPolicy"
+              action_distribution_type: "gaussian"
+              at_resting_threshold: 0.2
+              obs_skill_inputs: ["obj_start_sensor"]
+              load_ckpt_file: "data/models/close_cab.pth"
+              max_skill_steps: 200
+              start_zone_radius: 0.3
+              force_end_on_timeout: True
+
+            nn_close_fridge:
+              skill_name: "ArtObjSkillPolicy"
+              name: "PointNavResNetPolicy"
+              action_distribution_type: "gaussian"
+              at_resting_threshold: 0.2
+              obs_skill_inputs: ["obj_start_sensor"]
+              load_ckpt_file: "data/models/close_fridge.pth"
+              max_skill_steps: 200
+              start_zone_radius: 0.3
+              force_end_on_timeout: True
+
+            nn_pick:
+              skill_name: "PickSkillPolicy"
+              name: "PointNavResNetPolicy"
+              action_distribution_type: "gaussian"
+              at_resting_threshold: 0.15
+              load_ckpt_file: "../policies/pick/checkpoints/latest.pth"
+              max_skill_steps: 350
+              force_end_on_timeout: True
+
+            nn_place:
+              skill_name: "PlaceSkillPolicy"
+              name: "PointNavResNetPolicy"
+              action_distribution_type: "gaussian"
+              at_resting_threshold: 0.15
+              obs_skill_inputs: ["obj_goal_sensor"]
+              load_ckpt_file: "../policies/place/checkpoints/latest.pth"
+              max_skill_steps: 200
+              force_end_on_timeout: True
+
+            nn_nav:
+              skill_name: "NavSkillPolicy"
+              name: "PointNavResNetPolicy"
+              action_distribution_type: "gaussian"
+              obs_skill_input_dim: 2
+              lin_speed_stop: 0.067
+              ang_speed_stop: 0.067
+              load_ckpt_file: "../policies/nav/checkpoints/latest.pth"
+              max_skill_steps: 350
+              force_end_on_timeout: False
+
+            wait_skill:
+              skill_name: "WaitSkillPolicy"
+              max_skill_steps: -1.0
+              force_end_on_timeout: False
+
+            reset_arm:
+              skill_name: "ResetArmSkill"
+              max_skill_steps: 50
+              reset_joint_state: [-0.50357157, -1.1034983 , -0.02017384,  1.008798  ,  0.21056566, 1.5193937 , -0.13349287]
+              force_end_on_timeout: False
+
+          use_skills:
+            # Uncomment if you are also using these skills
+            # open_cab: "NN_OPEN_CAB"
+            # open_fridge: "NN_OPEN_FRIDGE"
+            # close_cab: "NN_OPEN_CAB"
+            # close_fridge: "NN_OPEN_FRIDGE"
+            pick: "nn_pick"
+            place: "nn_place"
+            nav: "nn_nav"
+            nav_to_receptacle: "nn_nav"
+            #wait: "wait_skill"
+            reset_arm: "reset_arm"
+
+    ppo:
+      # ppo params
+      clip_param: 0.2
+      ppo_epoch: 2
+      num_mini_batch: 1
+      value_loss_coef: 0.5
+      entropy_coef: 0.001
+      lr: 3e-4
+      eps: 1e-5
+      max_grad_norm: 0.2
+      num_steps: 128
+      use_gae: True
+      gamma: 0.99
+      tau: 0.95
+      use_linear_clip_decay: False
+      use_linear_lr_decay: False
+      reward_window_size: 50
+
+      use_normalized_advantage: False
+
+      hidden_size: 512
+
+      # Use double buffered sampling, typically helps
+      # when environment time is similar or larger than
+      # policy inference time during rollout generation
+      use_double_buffered_sampler: False
+
+    ddppo:
+      sync_frac: 0.6
+      # The PyTorch distributed backend to use
+      distrib_backend: NCCL
+      # Visual encoder backbone
+      pretrained_weights: data/ddppo-models/gibson-2plus-resnet50.pth
+      # Initialize with pretrained weights
+      pretrained: False
+      # Initialize just the visual encoder backbone with pretrained weights
+      pretrained_encoder: False
+      # Whether the visual encoder backbone will be trained.
+      train_encoder: True
+      # Whether to reset the critic linear layer
+      reset_critic: True
+
+      # Model parameters
+      backbone: resnet18
+      rnn_type: LSTM
+      num_recurrent_layers: 2
