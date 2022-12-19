@@ -1,8 +1,0 @@
-{
-    "stage_instance":{
-        "template_name": "stages/frl_apartment_stage"
-    },
-    "default_lighting":  "lighting/frl_apartment_stage",
-    "object_instances":[],
-    "navmesh_instance": "empty_stage_navmesh"
-}
