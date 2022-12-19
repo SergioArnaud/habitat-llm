@@ -8,13 +8,16 @@ import gym.spaces as spaces
 import numpy as np
 import torch
 
+# Habitat
 from habitat.core.spaces import ActionSpace
 from habitat_baselines.common.baseline_registry import baseline_registry
 from habitat_baselines.common.logging import baselines_logger
 from habitat_baselines.common.tensor_dict import TensorDict
 from habitat_baselines.config.default import get_config
-from habitat_baselines.rl.hrl.skills.skill import SkillPolicy
 from habitat_baselines.utils.common import get_num_actions
+
+# Local
+from skills.skill import SkillPolicy
 
 
 def truncate_obs_space(space: spaces.Box, truncate_len: int) -> spaces.Box:
@@ -87,14 +90,12 @@ class NnSkillPolicy(SkillPolicy):
 
     def on_enter(
         self,
-        skill_arg,
         batch_idxs,
         observations,
         rnn_hidden_states,
         prev_actions,
     ):
         super().on_enter(
-            skill_arg,
             batch_idxs,
             observations,
             rnn_hidden_states,
@@ -134,7 +135,7 @@ class NnSkillPolicy(SkillPolicy):
         )
         full_action = torch.zeros(prev_actions.shape, device=masks.device)
         full_action[:, self._ac_start : self._ac_start + self._ac_len] = action
-        `
+
         # I think this is wrong?
         self._did_want_done[cur_batch_idx] = full_action[
             cur_batch_idx, self._stop_action_idx
@@ -160,10 +161,19 @@ class NnSkillPolicy(SkillPolicy):
         policy = baseline_registry.get_policy(config.name)
 
         expected_obs_space = policy_cfg.habitat.gym.obs_keys
+
         excepted_action_space = policy_cfg.habitat.task.actions.keys()
 
         filtered_obs_space = spaces.Dict(
             {k: observation_space.spaces[k] for k in expected_obs_space}
+        )
+
+        baselines_logger.debug(
+            f"Loaded obs space {filtered_obs_space} for skill {config.skill_name}",
+        )
+
+        baselines_logger.debug(
+            "Expected obs space: " + str(expected_obs_space)
         )
 
         filtered_action_space = ActionSpace(
@@ -187,6 +197,9 @@ class NnSkillPolicy(SkillPolicy):
         baselines_logger.debug(
             f"Loaded action space {filtered_action_space} for skill {config.skill_name}",
         )
+        baselines_logger.debug(
+            '=' * 80
+        )
 
         actor_critic = policy.from_config(
             policy_cfg, filtered_obs_space, filtered_action_space
@@ -205,6 +218,7 @@ class NnSkillPolicy(SkillPolicy):
                 f"Could not load checkpoint for skill {config.skill_name} from {config.load_ckpt_file}"
             ) from e
 
+        #baselines_logger.debug(f'Initializing skill with action space {action_space} and observation space {filtered_obs_space} and filtered action space {filtered_action_space}')
         return cls(
             actor_critic,
             config,

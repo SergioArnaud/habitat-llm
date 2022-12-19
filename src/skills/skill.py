@@ -10,6 +10,7 @@ import torch
 from habitat.tasks.rearrange.rearrange_sensors import IsHoldingSensor
 from habitat_baselines.rl.hrl.utils import find_action_range
 from habitat_baselines.rl.ppo.policy import Policy
+from habitat_baselines.common.logging import baselines_logger
 
 
 class SkillPolicy(Policy):
@@ -31,7 +32,9 @@ class SkillPolicy(Policy):
         self._stop_action_idx, _ = find_action_range(action_space, "rearrange_stop")
 
         # This is the index of the grip action in the action space
-        _, self.grip_action_index = find_action_range(action_space, "arm_action")
+        _, self.grip_action_index = find_action_range(action_space, "arm_action") 
+        self.grip_action_index -= 1
+        baselines_logger.debug("grip_action_index " + str(self.grip_action_index))
 
     def to(self, device):
         self.device = device
@@ -51,8 +54,13 @@ class SkillPolicy(Policy):
 
         # If it is not holding (0) want to keep releasing -> output -1.
         # If it is holding (1) want to keep grasping -> output +1.
-        full_action[:, self._grip_ac_idx] = is_holding + (is_holding - 1.0)
+        full_action[:, self.grip_action_index] = is_holding + (is_holding - 1.0)
         return full_action
+
+    def _internal_log(self, s, observations=None):
+        baselines_logger.debug(
+            f"Skill {self._config.skill_name} @ step {self._cur_skill_step}: {s}"
+        )
 
     def _is_skill_done(
         self, observations, rnn_hidden_states, prev_actions, masks, batch_idx

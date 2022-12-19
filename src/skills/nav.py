@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import gym.spaces as spaces
 import torch
 
+# Habitat
 from habitat.tasks.rearrange.rearrange_sensors import (
     TargetGoalGpsCompassSensor,
     TargetStartGpsCompassSensor,
@@ -15,7 +16,9 @@ from habitat.tasks.rearrange.sub_tasks.nav_to_obj_sensors import (
     NavGoalPointGoalSensor,
 )
 from habitat_baselines.common.tensor_dict import TensorDict
-from habitat_baselines.rl.hrl.skills.nn_skill import NnSkillPolicy
+
+# Local
+from skills.nn_skill import NnSkillPolicy
 
 
 class NavSkillPolicy(NnSkillPolicy):

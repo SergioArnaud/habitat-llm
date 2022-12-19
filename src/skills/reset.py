@@ -2,14 +2,17 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import List, Tuple
+from typing import Tuple
 
 import gym.spaces as spaces
 import numpy as np
 import torch
 
-from habitat_baselines.rl.hrl.skills.skill import SkillPolicy
+# Habitat
 from habitat_baselines.utils.common import get_num_actions
+
+# Local
+from skills.skill import SkillPolicy
 
 
 class ResetArmSkill(SkillPolicy):
@@ -31,14 +34,12 @@ class ResetArmSkill(SkillPolicy):
 
     def on_enter(
         self,
-        skill_arg: List[str],
-        batch_idxs: List[int],
+        batch_idxs,
         observations,
         rnn_hidden_states,
         prev_actions,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         ret = super().on_enter(
-            skill_arg,
             batch_idxs,
             observations,
             rnn_hidden_states,
@@ -50,9 +51,6 @@ class ResetArmSkill(SkillPolicy):
         )
 
         return ret
-
-    def _parse_skill_arg(self, skill_arg: str):
-        return None
 
     def _is_skill_done(
         self, observations, rnn_hidden_states, prev_actions, masks, batch_idx
@@ -89,7 +87,7 @@ class ResetArmSkill(SkillPolicy):
 
         action = torch.zeros_like(prev_actions)
 
-        action[..., self._ac_start : self._ac_start + 7] = torch.from_numpy(
+        action[..., self._ac_start: self._ac_start + 7] = torch.from_numpy(
             delta
         ).to(device=action.device, dtype=action.dtype)
 
