@@ -1,5 +1,5 @@
 .vscode/**
-data/**
+**/data/**
 policies/**
 **/videos/**
 **/deprecated.txt
