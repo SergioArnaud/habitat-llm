@@ -71,14 +71,14 @@ def setup():
         config.habitat_baselines.wb.entity = config.WANDB.entity
 
     # Create the symlink to the data folder
-    subprocess.call(
-        [
-            "ln",
-            "-s",
-            "/Users/sergioarnaud/Documents/habitat-llm/data",
-            "data",
-        ]
-    )
+    #subprocess.call(
+    #    [
+    #        "ln",
+    #        "-s",
+    #        "/private/home/sergioarnaud/habitat-llm/data",
+    #        "data",
+    #    ]
+    #)
     return config
 
 def main() -> None:

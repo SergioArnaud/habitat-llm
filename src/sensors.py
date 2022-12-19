@@ -45,12 +45,14 @@ class DynamicNavGoalPointGoalSensor(UsesRobotInterface, Sensor):
         )
 
     def get_observation(self, task, *args, **kwargs):
-        target = self._sim.dynamic_target
+        try:
+            target = self._sim.dynamic_target
+        except:
+            target = np.zeros(3)
         #target = task.nav_goal_pos
         transform = self._sim.get_robot_data(self.robot_id).robot.base_transformation
         dir_vector = transform.inverted().transform_point(target)
         rho, phi = cartesian_to_polar(dir_vector[0], dir_vector[1])
-
         return np.array([rho, -phi], dtype=np.float32)
 
 
@@ -73,12 +75,13 @@ class DynamicTargetStartSensor(UsesRobotInterface, MultiObjSensor):
     def get_observation(self, *args, observations, episode, **kwargs):
         self._sim: RearrangeSim 
 
-        target = self._sim.dynamic_target
-        #target = pos = self._sim.get_target_objs_start()[0]
+        try:
+            target = self._sim.dynamic_target
+        except:
+            target = np.zeros(3)
         transform = self._sim.get_robot_data(self.robot_id).robot.ee_transform
         dir_vector = transform.inverted().transform_point(target)
         return np.array(dir_vector, dtype=np.float32).reshape(-1)
-
 
 @dataclass
 class DynamicTargetStartSensorConfig(LabSensorConfig):
@@ -87,9 +90,39 @@ class DynamicTargetStartSensorConfig(LabSensorConfig):
     dimensionality: int = 3
 
 
+@registry.register_sensor
+class DynamicTargetGoalSensor(UsesRobotInterface, MultiObjSensor):
+    """
+    Relative position from end effector to target object
+    """
+
+    cls_uuid: str = "dynamic_obj_goal_sensor"
+
+    def _get_uuid(self, *args, **kwargs):
+        return DynamicTargetGoalSensor.cls_uuid
+
+    def get_observation(self, *args, observations, episode, **kwargs):
+        self._sim: RearrangeSim 
+
+        try:
+            target = self._sim.dynamic_target
+        except:
+            target = np.zeros(3)
+        transform = self._sim.get_robot_data(self.robot_id).robot.ee_transform
+        dir_vector = transform.inverted().transform_point(target)
+        return np.array(dir_vector, dtype=np.float32).reshape(-1)
+
+@dataclass
+class DynamicTargetGoalSensorConfig(LabSensorConfig):
+    type: str = "DynamicTargetGoalSensor"
+    goal_format: str = "CARTESIAN"
+    dimensionality: int = 3
+
+
 ALL_SENSORS = [ 
     DynamicNavGoalPointGoalSensorConfig,
     DynamicTargetStartSensorConfig,
+    DynamicTargetGoalSensorConfig
 ]
 def register_sensors(conf):
     with habitat.config.read_write(conf):
