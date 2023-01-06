@@ -7,7 +7,7 @@ Conda
 setup
 ```
 # create a conda image 
-conda create -n habitat-llm  python=3.7 cmake=3.14.0
+conda create -n habitat-llm  python=3.8.1 cmake=3.14.0
 conda activate habitat-llm
 conda install habitat-sim withbullet headless -c conda-forge -c aihabitat
 
@@ -20,7 +20,14 @@ python -m habitat_sim.utils.datasets_download --uids rearrange_task_assets --dat
 
 # Other dependencies
 conda install -c conda-forge wandb
-conda install -c conda-forge ipywidgets\
+conda install -c conda-forge ipywidgets
+
+# Language
+pip install langchain
+pip install openai
+pip install regex
+
+
 ```
 
 

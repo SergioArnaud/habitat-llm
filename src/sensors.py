@@ -45,11 +45,8 @@ class DynamicNavGoalPointGoalSensor(UsesRobotInterface, Sensor):
         )
 
     def get_observation(self, task, *args, **kwargs):
-        try:
-            target = self._sim.dynamic_target
-        except:
-            target = np.zeros(3)
-        #target = task.nav_goal_pos
+        target = self._sim.dynamic_target
+        # target = task.nav_goal_pos
         transform = self._sim.get_robot_data(self.robot_id).robot.base_transformation
         dir_vector = transform.inverted().transform_point(target)
         rho, phi = cartesian_to_polar(dir_vector[0], dir_vector[1])
@@ -73,15 +70,13 @@ class DynamicTargetStartSensor(UsesRobotInterface, MultiObjSensor):
         return DynamicTargetStartSensor.cls_uuid
 
     def get_observation(self, *args, observations, episode, **kwargs):
-        self._sim: RearrangeSim 
+        self._sim: RearrangeSim
 
-        try:
-            target = self._sim.dynamic_target
-        except:
-            target = np.zeros(3)
+        target = self._sim.dynamic_target
         transform = self._sim.get_robot_data(self.robot_id).robot.ee_transform
         dir_vector = transform.inverted().transform_point(target)
         return np.array(dir_vector, dtype=np.float32).reshape(-1)
+
 
 @dataclass
 class DynamicTargetStartSensorConfig(LabSensorConfig):
@@ -102,15 +97,13 @@ class DynamicTargetGoalSensor(UsesRobotInterface, MultiObjSensor):
         return DynamicTargetGoalSensor.cls_uuid
 
     def get_observation(self, *args, observations, episode, **kwargs):
-        self._sim: RearrangeSim 
-
-        try:
-            target = self._sim.dynamic_target
-        except:
-            target = np.zeros(3)
+        self._sim: RearrangeSim
+        target = self._sim.dynamic_target
         transform = self._sim.get_robot_data(self.robot_id).robot.ee_transform
         dir_vector = transform.inverted().transform_point(target)
         return np.array(dir_vector, dtype=np.float32).reshape(-1)
+
+
 
 @dataclass
 class DynamicTargetGoalSensorConfig(LabSensorConfig):
@@ -119,11 +112,19 @@ class DynamicTargetGoalSensorConfig(LabSensorConfig):
     dimensionality: int = 3
 
 
-ALL_SENSORS = [ 
+ALL_SENSORS = [
     DynamicNavGoalPointGoalSensorConfig,
     DynamicTargetStartSensorConfig,
-    DynamicTargetGoalSensorConfig
+    DynamicTargetGoalSensorConfig,
 ]
+
+SENSOR_MAPPINGS = {
+    "dynamic_goal_to_agent_gps_compass": "goal_to_agent_gps_compass",
+    "dynamic_obj_start_sensor": "obj_start_sensor",
+    "dynamic_obj_goal_sensor": "obj_goal_sensor",
+}
+
+
 def register_sensors(conf):
     with habitat.config.read_write(conf):
         for sensor_config in ALL_SENSORS:
