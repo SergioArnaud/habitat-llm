@@ -1,0 +1,7 @@
+active_user_feedback:
+  name: 'Ask User'
+  description: "Ask feedback from the user, you can ask the user to clarify when a goal isn't clear or whenever you've tried to do something several times without success, the user might also ask you to stop"
+  module: "ActiveUserFeedback"
+  agent_tool: True
+  verbose: True
+  

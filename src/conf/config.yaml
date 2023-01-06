@@ -1,8 +1,9 @@
 defaults:
   - _self_
-  - experiments@: base_train #We're currently not learning
+  - training@: base_train #We're currently not learning
   - habitat_conf: sandbox
   - habitat_conf/task: sandbox
+  - agent: nav_pick_agent
   - wandb@: own
   - override hydra/output: local
   #- override hydra/launcher: slurm_train #We're currently not using slurm/submitit

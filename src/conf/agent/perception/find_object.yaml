@@ -1,0 +1,7 @@
+find_object:
+  name: 'Find Object'
+  description: 'Useful to know the exact location of an object, give as much information as possible about the object and the receptacle or furniture it is in.'
+  module: FindObj
+  agent_tool: True
+  verbose: False
+  

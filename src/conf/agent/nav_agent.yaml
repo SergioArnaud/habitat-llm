@@ -1,0 +1,13 @@
+defaults:
+  - motor_skills:
+    - nn_nav
+    - reset_arm
+    - user_feedback
+    - find_object
+  - perception:
+    - find_object
+  - feedback:
+    - active_user_feedback
+  
+  
+

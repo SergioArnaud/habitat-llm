@@ -1,0 +1,12 @@
+defaults:
+  - motor_skills:
+    - nn_nav
+    - nn_pick
+    - nn_place
+    - reset_arm
+  - perception:
+    - find_object
+  - feedback:
+    - active_user_feedback
+  
+

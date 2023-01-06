@@ -1,0 +1,15 @@
+defaults:
+  - motor_skills:
+    - nn_nav
+    - nn_pick
+    - reset_arm
+    - nn_place
+    - nn_open_cab
+    - nn_open_fridge
+    - nn_close_cab
+    - nn_close_fridge
+  - perception:
+    - find_object
+  - feedback:
+    - active_user_feedback
+  

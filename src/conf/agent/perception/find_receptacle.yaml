@@ -1,0 +1,7 @@
+find_receptacle:
+  name: 'Find Receptacle'
+  description: 'Useful to know the exact location of a receptacle'
+  module: FindReceptacle
+  agent_tool: True
+  verbose: False
+  

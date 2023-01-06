@@ -1,0 +1,13 @@
+nn_pick:
+  name: 'Pick Object'
+  description: 'Pick up an object, you need to provide the id returned by the find object function and you should have navigated before picking up.'
+  agent_tool: True
+
+  rl:
+    skill_name: "PickSkillPolicy"
+    name: "PointNavResNetPolicy"
+    action_distribution_type: "gaussian"
+    at_resting_threshold: 0.2
+    load_ckpt_file: "../new_policies/train/pick/checkpoints/latest.pth"
+    max_skill_steps: 350
+    force_end_on_timeout: True

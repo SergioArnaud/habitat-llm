@@ -1,0 +1,12 @@
+nn_nav:
+  name: 'Navigate'
+  description: 'Navigate towards a target object or receptacle, you need to provide the id returned by one of the find functions'
+  agent_tool: True
+
+  rl:
+    skill_name: "NavSkillPolicy"
+    name: "PointNavResNetPolicy"
+    action_distribution_type: "gaussian"
+    load_ckpt_file: "../new_policies/train/nav_to_obj/checkpoints/latest.pth"
+    max_skill_steps: 600
+    force_end_on_timeout: True

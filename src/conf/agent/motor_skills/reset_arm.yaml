@@ -1,0 +1,8 @@
+reset_arm:
+  agent_tool: False
+  rl:
+    skill_name: "ResetArmSkill"
+    max_skill_steps: 350
+    reset_joint_state: [-0.50357157, -1.1034983 , -0.02017384,  1.008798  ,  0.21056566, 1.5193937 , -0.13349287]
+    force_end_on_timeout: False
+    

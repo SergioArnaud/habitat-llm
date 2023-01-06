@@ -1,0 +1,14 @@
+nn_place:
+  name: "Place Object"
+  description: "Place an object, you need to provide the id of the place where you want to place the object, no need to provide the id of the object that you're placing, you need to navigate to the place before placing"
+  agent_tool: True
+
+  rl:
+    skill_name: "PlaceSkillPolicy"
+    name: "PointNavResNetPolicy"
+    action_distribution_type: "gaussian"
+    at_resting_threshold: 0.15
+    obs_skill_inputs: ["obj_goal_sensor"]
+    load_ckpt_file: "../policies/place/checkpoints/latest.pth"
+    max_skill_steps: 200
+    force_end_on_timeout: True
