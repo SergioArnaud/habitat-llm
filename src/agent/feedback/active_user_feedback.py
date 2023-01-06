@@ -3,7 +3,7 @@ from langchain.chains.base import Chain
 from langchain import PromptTemplate, LLMChain
 from langchain.llms.base import BaseLLM
 from langchain.input import print_text
-from agent.environment_interface import EnvironmentInterface
+from agent.env.environment_interface import EnvironmentInterface
 
 
 class ActiveUserFeedback(Chain, BaseModel):

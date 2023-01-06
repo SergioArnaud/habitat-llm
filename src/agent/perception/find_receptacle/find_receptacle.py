@@ -2,7 +2,7 @@ from pydantic import BaseModel, Extra
 from langchain.chains.base import Chain
 from langchain import PromptTemplate, LLMChain
 from langchain.llms.base import BaseLLM
-from agent.environment_interface import EnvironmentInterface
+from agent.env.environment_interface import EnvironmentInterface
 
 
 PROMPT = """You're in a house and the following objects are present: 
